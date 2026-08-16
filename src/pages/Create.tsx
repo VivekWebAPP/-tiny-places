@@ -20,7 +20,7 @@ import { NeoButton } from '@/components/NeoButton';
 import { themes, themeKeys } from '@/lib/themes';
 import { templateMeta, templateKeys, makeDefaultCard } from '@/lib/templates';
 import type { CardData, TemplateKey, ThemeKey, AgreementItem } from '@/lib/types';
-import { supabase } from '@/lib/supabase';
+import { buildShareUrl } from '@/lib/share';
 import { sfx, resumeAudio } from '@/lib/audio';
 
 type Section =
@@ -73,21 +73,15 @@ export default function Create() {
     update('theme', t);
   }
 
-  async function saveAndShare() {
+  function saveAndShare() {
     setSaving(true);
     try {
-      const { data, error } = await supabase
-        .from('cards')
-        .insert({ data: card })
-        .select('id')
-        .single();
-      if (error) throw error;
-      const url = `${window.location.origin}/view/${data.id}`;
+      const url = buildShareUrl(card);
       setShareUrl(url);
       setSection('share');
     } catch (err) {
       console.error(err);
-      alert('Could not save. Please try again.');
+      alert('Could not generate share link. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -641,7 +635,8 @@ export default function Create() {
                     <div className="space-y-4">
                       <div className="p-4 rounded-xl bg-[#fff8d6] border-[3px] border-[#1a1a1a] shadow-[3px_3px_0_#1a1a1a]">
                         <p className="font-display text-sm text-[#1a1a1a]/60 mb-2">
-                          Your card is live! Share this link:
+                          Your share link is ready! All card data is encoded
+                          directly in the URL — no account needed.
                         </p>
                         <div className="flex gap-2 items-center">
                           <input

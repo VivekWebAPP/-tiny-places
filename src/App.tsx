@@ -9,10 +9,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/create" element={<Create />} />
+        <Route path="/view" element={<View />} />
         <Route path="/view/:cardId" element={<View />} />
       </Routes>
     </BrowserRouter>
   );
 }
-
 export default App;

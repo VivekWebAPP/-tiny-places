@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
@@ -18,6 +18,7 @@ import { NeoButton } from '@/components/NeoButton';
 import { themes } from '@/lib/themes';
 import type { CardData } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
+import { decodeCardData } from '@/lib/share';
 import { sfx, resumeAudio } from '@/lib/audio';
 import { ScratchCard } from '@/components/exhibits/ScratchCard';
 import { SlideLock } from '@/components/exhibits/SlideLock';
@@ -56,6 +57,7 @@ const stepOrder: Step[] = [
 
 export default function View() {
   const { cardId } = useParams<{ cardId: string }>();
+  const [searchParams] = useSearchParams();
   const [card, setCard] = useState<CardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,8 +69,22 @@ export default function View() {
 
   useEffect(() => {
     async function load() {
+      // Priority 1: URL-encoded data param (no backend needed, works on any browser)
+      const dataParam = searchParams.get('data');
+      if (dataParam) {
+        const decoded = decodeCardData(dataParam);
+        if (decoded) {
+          setCard(decoded);
+        } else {
+          setError('Invalid or expired card link.');
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Priority 2: Supabase card ID from route param
       if (!cardId) {
-        setError('No card ID provided.');
+        setError('No card data found in this link.');
         setLoading(false);
         return;
       }
@@ -92,7 +108,7 @@ export default function View() {
       }
     }
     load();
-  }, [cardId]);
+  }, [cardId, searchParams]);
 
   function next() {
     const idx = stepOrder.indexOf(step);
@@ -133,7 +149,7 @@ export default function View() {
             {error || 'Something went wrong'}
           </h1>
           <p className="font-display text-[#1a1a1a]/60 mb-6">
-            This card may have been deleted or the link is broken.
+            This link may be broken or the card data could not be decoded.
           </p>
           <a href="/">
             <NeoButton color="bg-[#ff6b9d]" textColor="text-white">
