@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    overscroll-behavior: none;
+  }
+}
+
+@layer utilities {
+  .font-hand {
+    font-family: 'Patrick Hand', cursive;
+  }
+  .font-caveat {
+    font-family: 'Caveat', cursive;
+  }
+  .font-display {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .neo-border {
+    border: 3px solid #1a1a1a;
+    box-shadow: 4px 4px 0 #1a1a1a;
+  }
+  .neo-border-lg {
+    border: 4px solid #1a1a1a;
+    box-shadow: 6px 6px 0 #1a1a1a;
+  }
+  .paper-texture {
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 16px 16px;
+  }
+  .lined-paper {
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(100, 130, 200, 0.25) 31px,
+      rgba(100, 130, 200, 0.25) 32px
+    );
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+.animate-float {
+  animation: float-up 3s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
